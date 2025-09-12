@@ -1,7 +1,11 @@
 import { getStore } from "@netlify/blobs";
 
 // Access the Netlify KV store
-const store = getStore("rewards-config");
+const store = getStore({
+  name: "rewards-config",
+  siteID: process.env.NETLIFY_SITE_ID,   // Your site's API ID
+  token: process.env.NETLIFY_API_TOKEN, // Your personal access token
+});
 
 export async function handler(event) {
   if (event.httpMethod === "POST") {
