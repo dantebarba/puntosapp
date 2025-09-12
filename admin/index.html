@@ -78,6 +78,7 @@
       margin-top: 15px;
       font-size: 14px;
       color: #666;
+      min-height: 1.2em;
     }
 
     /* falling cinnamon rolls */
@@ -130,25 +131,60 @@
     }
     setInterval(createSnowflake, 600);
 
-    // handle config form
-    document.getElementById("configForm").addEventListener("submit", async (e) => {
+    const configForm = document.getElementById("configForm");
+    const sheetIdInput = document.getElementById("sheetId");
+    const msg = document.getElementById("msg");
+    const API_ENDPOINT = "/.netlify/functions/admin";
+
+    // Function to fetch and display the current config on page load
+    async function loadConfig() {
+      msg.textContent = "Loading current configuration...";
+      try {
+        const res = await fetch(API_ENDPOINT);
+        if (!res.ok) throw new Error("Could not fetch config.");
+        
+        const data = await res.json();
+        if (data.sheetId) {
+          sheetIdInput.value = data.sheetId;
+          msg.textContent = "Current configuration loaded.";
+        } else {
+          msg.textContent = "Enter a Spreadsheet ID to begin.";
+        }
+      } catch (err) {
+        msg.textContent = "❌ Error loading config.";
+        console.error(err);
+      }
+    }
+
+    // handle config form submission
+    configForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const sheetId = document.getElementById("sheetId").value.trim();
-      const msg = document.getElementById("msg");
+      const sheetId = sheetIdInput.value.trim();
+      
+      if (!sheetId) {
+        msg.textContent = "Please enter an ID.";
+        return;
+      }
 
       msg.textContent = "Saving...";
       try {
-        const res = await fetch("/.netlify/functions/config", {
+        const res = await fetch(API_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sheetId })
         });
+        if (!res.ok) throw new Error("Failed to save. Server returned an error.");
+
         const data = await res.json();
-        msg.textContent = data.success ? "✅ Saved successfully" : "❌ Failed to save";
+        msg.textContent = data.success ? "✅ Saved successfully!" : "❌ Failed to save.";
       } catch (err) {
-        msg.textContent = "❌ Error saving config";
+        msg.textContent = `❌ ${err.message}`;
+        console.error(err);
       }
     });
+
+    // Load the config when the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", loadConfig);
   </script>
 </body>
 </html>
