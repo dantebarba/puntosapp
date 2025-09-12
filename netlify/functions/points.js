@@ -1,9 +1,9 @@
-import { KVNamespace } from "@netlify/kv";
-const store = new KVNamespace("rewards-config");
+import { getStore } from "@netlify/blobs";
+
+const store = getStore("rewards-config");
 
 export async function handler(event) {
-  const params = event.queryStringParameters;
-  const user = params.user;
+  const user = event.queryStringParameters?.user;
   if (!user) return { statusCode: 400, body: JSON.stringify({ error: "Missing user param" }) };
 
   const sheetId = await store.get("spreadsheet_id");
