@@ -1,0 +1,23 @@
+{
+    "name": "reward-points-app",
+    "version": "1.0.0",
+    "description": "Reward points app with Netlify Functions and KV storage",
+    "main": "index.js",
+    "scripts": {
+      "start": "netlify dev",
+      "build": "echo \"No build step needed\""
+    },
+    "keywords": [
+      "netlify",
+      "serverless",
+      "kv-storage",
+      "reward-points"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "dependencies": {
+      "@netlify/blobs": "^1.0.0",
+      "node-fetch": "^3.3.2"
+    },
+    "type": "module"
+  }
