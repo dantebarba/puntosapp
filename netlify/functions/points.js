@@ -8,6 +8,12 @@ const store = getStore({
 
 export async function handler(event) {
   try {
+    // 1. Get the user ID from the query parameters
+    const userId = event.queryStringParameters?.userid;
+    if (!userId) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Missing userid query parameter." }) };
+    }
+
     // Get the spreadsheet ID from the Blob store
     const blob = await store.get("spreadsheet_id");
     if (!blob) {
@@ -30,9 +36,9 @@ export async function handler(event) {
 
     const data = await response.json();
 
-    // Return an empty array if the sheet has no data
+    // Return an error if the sheet has no data
     if (!data.values || data.values.length < 1) {
-      return { statusCode: 200, body: JSON.stringify([]) };
+      return { statusCode: 404, body: JSON.stringify({ error: "No data found in spreadsheet." }) };
     }
 
     // The first row is the header, the rest are data rows
@@ -41,7 +47,6 @@ export async function handler(event) {
     // Identify valid headers and their original column index
     const validHeaders = [];
     headerRow.forEach((header, index) => {
-      // Only include columns that have a non-empty header title
       if (header && header.trim()) {
         validHeaders.push({
           key: header.trim().toLowerCase().replace(/ /g, '_'),
@@ -50,20 +55,31 @@ export async function handler(event) {
       }
     });
 
-    // Map each data row to a JSON object using only the valid headers
-    const jsonData = dataRows.map(row => {
+    // Map all data rows to JSON objects using the valid headers
+    const allUsers = dataRows.map(row => {
       const entry = {};
       validHeaders.forEach(headerInfo => {
-        // Use the header's original index to get the correct cell from the row
         entry[headerInfo.key] = row[headerInfo.index] || null;
       });
       return entry;
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(jsonData),
-    };
+    // 2. Find the specific user's row in the processed data
+    // This assumes you have a column titled "userid" in your sheet
+    const userRecord = allUsers.find(row => row.userid === userId);
+
+    // 3. Return the result
+    if (userRecord) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify(userRecord),
+      };
+    } else {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: `User with ID '${userId}' not found.` }),
+      };
+    }
 
   } catch (err) {
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
