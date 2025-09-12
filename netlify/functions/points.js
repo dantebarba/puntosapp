@@ -14,15 +14,15 @@ export async function handler(event) {
       return { statusCode: 400, body: JSON.stringify({ error: "Missing userid query parameter." }) };
     }
 
-    // Get the spreadsheet ID from the Blob store
-    const blob = await store.get("spreadsheet_id");
-    if (!blob) {
+    // Get the spreadsheet ID directly from the store
+    const sheetId = await store.get("spreadsheet_id");
+    if (!sheetId) {
       return {
         statusCode: 404,
         body: JSON.stringify({ error: "Spreadsheet ID not configured." }),
       };
     }
-    const sheetId = await blob.text();
+    // No .text() call is necessary with this configuration
 
     // Expanded range to cover columns A through Z
     const range = "Sheet1!A:Z"; 
@@ -65,7 +65,6 @@ export async function handler(event) {
     });
 
     // 2. Find the specific user's row in the processed data
-    // This assumes you have a column titled "userid" in your sheet
     const userRecord = allUsers.find(row => row.userid === userId);
 
     // 3. Return the result
