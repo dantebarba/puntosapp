@@ -23,6 +23,7 @@
       text-align: center;
       z-index: 10;
       animation: fadeIn 1s ease;
+      min-width: 300px;
     }
 
     .icon {
@@ -34,6 +35,7 @@
       font-size: 24px;
       margin: 0;
       color: #333;
+      min-height: 29px;
     }
 
     #points {
@@ -76,33 +78,50 @@
 <body>
   <div class="card">
     <div class="icon">🍩</div>
-    <h1>Your Reward Points</h1>
+    <h1 id="userName">Welcome!</h1>
     <div id="points" class="loading">Loading...</div>
   </div>
 
   <script>
     async function loadPoints() {
       const params = new URLSearchParams(window.location.search);
-      const user = params.get("user");
+      // We read `?user=` from the URL for simplicity
+      const userId = params.get("user");
       const pointsDiv = document.getElementById("points");
+      const userNameH1 = document.getElementById("userName");
 
-      if (!user) {
-        pointsDiv.textContent = "Missing ?user param";
+      if (!userId) {
+        userNameH1.textContent = "Error";
+        pointsDiv.textContent = "Missing ?user param in URL";
         pointsDiv.classList.remove("loading");
         return;
       }
 
       try {
-        const res = await fetch(`/.netlify/functions/points?user=${user}`);
+        // The API expects `?userid=`, so we use that in the fetch URL
+        const res = await fetch(`/.netlify/functions/points?userid=${userId}`);
+
+        // Check for 404 Not Found or other server errors
+        if (!res.ok) {
+          if (res.status === 404) {
+            userNameH1.textContent = "Sorry!";
+            pointsDiv.textContent = "User not found";
+          } else {
+            throw new Error(`Server error: ${res.status}`);
+          }
+          return;
+        }
+        
         const data = await res.json();
 
-        if (data.points) {
-          pointsDiv.textContent = `${data.points} pts`;
-        } else {
-          pointsDiv.textContent = "User not found";
-        }
+        // Update the UI with the data from the API response
+        userNameH1.textContent = data.nombre || "Welcome!";
+        pointsDiv.textContent = `${data.puntos || 0} pts`;
+
       } catch (err) {
-        pointsDiv.textContent = "Error loading points";
+        userNameH1.textContent = "Error";
+        pointsDiv.textContent = "Could not load points";
+        console.error(err);
       } finally {
         pointsDiv.classList.remove("loading");
       }
