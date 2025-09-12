@@ -1,6 +1,10 @@
 import { getStore } from "@netlify/blobs";
 
-const store = getStore("rewards-config");
+const store = getStore({
+  name: "rewards-config",
+  siteID: process.env.NETLIFY_SITE_ID,   // Your site's API ID
+  token: process.env.NETLIFY_API_TOKEN, // Your personal access token
+});
 
 export async function handler(event) {
   try {
