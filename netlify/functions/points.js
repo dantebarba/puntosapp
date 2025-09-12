@@ -9,19 +9,31 @@ export async function handler(event) {
       return { statusCode: 400, body: JSON.stringify({ error: "Missing user param" }) };
     }
 
-    // Get the spreadsheet ID from KV
-    const sheetId = await store.get("spreadsheet_id");
-    if (!sheetId) {
-      return { statusCode: 500, body: JSON.stringify({ error: "Spreadsheet ID not set" }) };
+    // Get the spreadsheet ID blob from the store
+    const blob = await store.get("spreadsheet_id");
+    if (!blob) {
+      return {
+        statusCode: 404, // Use 404 Not Found since the config is missing
+        body: JSON.stringify({ error: "Spreadsheet ID not configured." }),
+      };
     }
+    // Read the text content from the blob
+    const sheetId = await blob.text();
 
     const range = "Sheet1!A:B"; // adjust as needed
     const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${process.env.GOOGLE_API_KEY}`;
 
-    const data = await fetch(sheetsUrl).then(r => r.json());
+    const response = await fetch(sheetsUrl);
+    if (!response.ok) {
+        const errorDetails = await response.json().catch(() => ({ message: "Could not parse error from Google Sheets API."}));
+        return { statusCode: response.status, body: JSON.stringify({ error: "Failed to read sheet", details: errorDetails }) };
+    }
 
+    const data = await response.json();
+
+    // It's possible for an empty sheet to have no values
     if (!data.values) {
-      return { statusCode: 500, body: JSON.stringify({ error: "Failed to read sheet" }) };
+        return { statusCode: 200, body: JSON.stringify({ user, points: null }) };
     }
 
     // Find the row for this user
@@ -29,7 +41,7 @@ export async function handler(event) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ user, points: row ? row[1] : null })
+      body: JSON.stringify({ user, points: row ? row[1] : null }),
     };
   } catch (err) {
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
