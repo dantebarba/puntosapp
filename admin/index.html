@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – Reward Points Config</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fdf6e3; /* vanilla background */
+      font-family: "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      padding: 40px 60px;
+      text-align: center;
+      z-index: 10;
+      width: 400px;
+      animation: fadeIn 1s ease;
+    }
+
+    .icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0 0 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      text-align: left;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #b85c38;
+    }
+
+    button {
+      background: #b85c38;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #8e452b;
+    }
+
+    .msg {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* falling cinnamon rolls */
+    .snowflake {
+      position: fixed;
+      top: -50px;
+      font-size: 28px;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.8; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🔒</div>
+    <h1>Admin Configuration</h1>
+    <form id="configForm">
+      <label for="sheetId">Google Spreadsheet ID</label>
+      <input type="text" id="sheetId" name="sheetId" placeholder="Enter Spreadsheet ID" required />
+      <button type="submit">Save</button>
+    </form>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <script>
+    // cinnamon roll snow
+    const rolls = ["🍥","🥐","🍩"];
+    function createSnowflake() {
+      const snowflake = document.createElement("div");
+      snowflake.classList.add("snowflake");
+      snowflake.textContent = rolls[Math.floor(Math.random() * rolls.length)];
+      snowflake.style.left = Math.random() * window.innerWidth + "px";
+      snowflake.style.animationDuration = (4 + Math.random() * 6) + "s";
+      snowflake.style.fontSize = (22 + Math.random() * 28) + "px";
+      document.body.appendChild(snowflake);
+      setTimeout(() => snowflake.remove(), 10000);
+    }
+    setInterval(createSnowflake, 600);
+
+    // handle config form
+    document.getElementById("configForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const sheetId = document.getElementById("sheetId").value.trim();
+      const msg = document.getElementById("msg");
+
+      msg.textContent = "Saving...";
+      try {
+        const res = await fetch("/.netlify/functions/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sheetId })
+        });
+        const data = await res.json();
+        msg.textContent = data.success ? "✅ Saved successfully" : "❌ Failed to save";
+      } catch (err) {
+        msg.textContent = "❌ Error saving config";
+      }
+    });
+  </script>
+</body>
+</html>
