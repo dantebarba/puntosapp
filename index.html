@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reward Points</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fdf6e3; /* vanilla background */
+      font-family: "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      padding: 40px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+      color: #333;
+    }
+
+    #points {
+      font-size: 40px;
+      font-weight: bold;
+      color: #b85c38;
+      margin-top: 15px;
+    }
+
+    /* falling cinnamon rolls */
+    .snowflake {
+      position: fixed;
+      top: -50px;
+      font-size: 32px;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🍩</div>
+    <h1>Your Reward Points</h1>
+    <div id="points">Loading...</div>
+  </div>
+
+  <script>
+    async function loadPoints() {
+      const params = new URLSearchParams(window.location.search);
+      const user = params.get("user");
+      if (!user) {
+        document.getElementById("points").textContent = "Missing ?user param";
+        return;
+      }
+
+      const res = await fetch(`/api/points?user=${user}`);
+      const data = await res.json();
+      document.getElementById("points").textContent = 
+        data.points ? `${data.points} pts` : "User not found";
+    }
+    loadPoints();
+
+    // cinnamon roll snow effect
+    const rolls = ["🍥","🥐","🍩"]; // pick your favorites
+    function createSnowflake() {
+      const snowflake = document.createElement("div");
+      snowflake.classList.add("snowflake");
+      snowflake.textContent = rolls[Math.floor(Math.random() * rolls.length)];
+      snowflake.style.left = Math.random() * window.innerWidth + "px";
+      snowflake.style.animationDuration = (4 + Math.random() * 6) + "s";
+      snowflake.style.fontSize = (24 + Math.random() * 24) + "px";
+      document.body.appendChild(snowflake);
+
+      setTimeout(() => snowflake.remove(), 10000);
+    }
+
+    setInterval(createSnowflake, 500);
+  </script>
+</body>
+</html>
