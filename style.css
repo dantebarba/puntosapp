@@ -1,0 +1,74 @@
+/* Define theme variables */
+:root {
+  --background-color: #fbe3b3; /* New Background */
+  --card-background: #ffffff;  /* New Ternary */
+  --primary-text-color: #333;
+  --secondary-text-color: #666;
+  --accent-color: #dd6740;      /* New Primary */
+  --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --border-radius: 20px;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.card {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 40px 60px;
+  text-align: center;
+  z-index: 10;
+  min-width: 300px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.card-header, .logo, h1, #points, .loading {
+  margin-bottom: 15px;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  object-fit: contain;
+}
+
+h1 { font-size: 24px; min-height: 29px; margin: 0; color: var(--primary-text-color); }
+#points { font-size: 42px; font-weight: bold; min-height: 50px; color: var(--accent-color); margin-top: 15px; }
+.loading { font-style: italic; font-size: 20px; color: var(--secondary-text-color); }
+
+.falling-cinnamon-roll {
+  position: fixed;
+  top: -100px;
+  z-index: 0;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 1s ease-out;
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(0vh) rotate(0deg);
+  }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}

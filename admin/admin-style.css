@@ -1,0 +1,123 @@
+/* Define theme variables */
+:root {
+  --background-color: #fbe3b3; /* New Background */
+  --card-background: #ffffff;
+  --primary-text-color: #333;
+  --secondary-text-color: #666;
+  --accent-color: #dd6740;      /* New Primary */
+  --border-color: #ddd;
+  --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --border-radius-lg: 20px;
+  --border-radius-md: 12px;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.card {
+  background: var(--card-background);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+  padding: 40px;
+  text-align: center;
+  z-index: 10;
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+  color: var(--secondary-text-color);
+}
+
+h1 {
+  font-size: 22px;
+  margin: 0 0 25px;
+  color: var(--primary-text-color);
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 8px;
+  color: var(--primary-text-color);
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  margin-bottom: 25px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: var(--accent-color);
+}
+
+button {
+  width: 100%;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: var(--border-radius-md);
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: #c75a33; /* Darker accent */
+  transform: translateY(-2px);
+}
+
+.msg {
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--secondary-text-color);
+  min-height: 1.2em;
+}
+
+/* Falling Item Animation */
+.falling-item {
+  position: fixed;
+  top: -50px;
+  z-index: 0;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(0vh) rotate(0deg);
+  }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
