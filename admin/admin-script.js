@@ -190,8 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("Configuration form not found in the DOM.");
   }
 
-  // Start the falling item animation
-  setInterval(createFallingItem, 600);
+
+  // Quitar la lluvia de emojis en admin panel (no iniciar animación)
 
   // Load the initial configuration
   loadConfig();
