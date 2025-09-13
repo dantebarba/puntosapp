@@ -59,23 +59,39 @@ async function loadPoints(userIdFromForm) {
         if (rewardsRes.ok) {
           const rewards = await rewardsRes.json();
           if (Array.isArray(rewards) && rewards.length > 0) {
-            // Filtrar premios con puntos numéricos y que el usuario pueda canjear
-            const canjeables = rewards
+            // Filtrar premios con puntos numéricos
+            const rewardsList = rewards
               .filter(r => r.puntos && !isNaN(parseInt(r.puntos, 10)))
               .map(r => ({ ...r, puntos: parseInt(r.puntos, 10) }))
-              .filter(r => puntos >= r.puntos)
               .sort((a, b) => a.puntos - b.puntos);
+            // Premios que puede canjear
+            const canjeables = rewardsList.filter(r => puntos >= r.puntos);
             if (canjeables.length > 0) {
               const premio = canjeables[canjeables.length - 1].descripcion;
               congratsLabel.innerHTML = `
-                <div style="background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;">
-                  <div style="font-weight:700;font-size:21px;margin-bottom:6px;">¡Felicitaciones!, tenés <span style='color:#e07a5f;'>${premio}</span> gratis!</div>
-                  <div style="font-size:16px;margin-top:6px;">
-                    Canjea tus premios haciendo <a href="#rewardsTableContainer" style="color:#b85c38;text-decoration:underline;font-weight:600;">click aquí</a>
+                <div style=\"background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;\">
+                  <div style=\"font-weight:700;font-size:21px;margin-bottom:6px;\">¡Felicitaciones!, tenés <span style='color:#e07a5f;'>${premio}</span> gratis!</div>
+                  <div style=\"font-size:16px;margin-top:6px;\">
+                    Canjea tus premios haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
                   </div>
                 </div>
               `;
               congratsLabel.style.display = "block";
+            } else {
+              // Buscar el próximo premio que puede canjear
+              const next = rewardsList.find(r => puntos < r.puntos);
+              if (next) {
+                const falta = next.puntos - puntos;
+                congratsLabel.innerHTML = `
+                  <div style=\"background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;\">
+                    <div style=\"font-weight:700;font-size:21px;margin-bottom:6px;\">¡Te faltan <span style='color:#e07a5f;'>${falta}</span> puntos para llegar a <span style='color:#e07a5f;'>${next.descripcion}</span> gratis!</div>
+                    <div style=\"font-size:16px;margin-top:6px;\">
+                      Hace tu próximo pedido haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
+                    </div>
+                  </div>
+                `;
+                congratsLabel.style.display = "block";
+              }
             }
           }
         }
@@ -157,7 +173,7 @@ async function showRewardsTable() {
       table += '</tr>';
     });
     table += '</tbody></table>';
-  if (content) content.innerHTML = table;
+  if (content) content.innerHTML = table  + '<div style="text-align:left;font-size:13px;color:#b85c38;margin-top:6px;font-family:Montserrat,Arial,sans-serif">(*) canje minimo 300 pts</div>';
   } catch (err) {
   const content = document.getElementById("rewardsTableContent");
   if (content) content.innerHTML = `<div class='loading'>Error al cargar premios</div>`;
