@@ -1,5 +1,74 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  // --- Login controlado por backend ---
+  // El backend decide si el login está habilitado (por variable de entorno segura)
+  let loginEnabled = true; // default
+
+  async function checkLoginConfig() {
+    try {
+      const res = await fetch("/.netlify/functions/admin-auth-config", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        loginEnabled = !!data.loginEnabled;
+      }
+    } catch (e) {
+      // Si falla, por seguridad, loginEnabled queda true
+    }
+    initAuthFlow();
+  }
+
+  function initAuthFlow() {
+    // --- Netlify Identity Auth ---
+    const adminProtected = document.getElementById("adminProtected");
+    const loginPrompt = document.getElementById("loginPrompt");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    function showAdminPanel() {
+      if (adminProtected) adminProtected.style.display = "block";
+      if (loginPrompt) loginPrompt.style.display = "none";
+    }
+    function showLoginPrompt() {
+      if (adminProtected) adminProtected.style.display = "none";
+      if (loginPrompt) loginPrompt.style.display = "block";
+    }
+
+    if (!loginEnabled) {
+      showAdminPanel();
+      return;
+    }
+
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (user) {
+          showAdminPanel();
+        } else {
+          showLoginPrompt();
+        }
+      });
+      window.netlifyIdentity.on("login", user => {
+        showAdminPanel();
+      });
+      window.netlifyIdentity.on("logout", () => {
+        showLoginPrompt();
+      });
+      window.netlifyIdentity.init();
+      if (loginBtn) {
+        loginBtn.onclick = () => {
+          if (window.netlifyIdentity) window.netlifyIdentity.open();
+        };
+      }
+      if (logoutBtn) {
+        logoutBtn.onclick = () => {
+          if (window.netlifyIdentity) window.netlifyIdentity.logout();
+        };
+      }
+    }
+  }
+
+  checkLoginConfig();
+
+
   // --- DOM Element Selectors ---
   const configForm = document.getElementById("configForm");
   const sheetIdInput = document.getElementById("sheetId");

@@ -10,23 +10,34 @@
 </head>
 <body>
 
-  <main class="card">
-    <div class="icon">🔒</div>
-    <h1>Admin Configuration</h1>
-    <form id="configForm">
-  <label for="sheetId">Google Spreadsheet ID</label>
-  <input type="text" id="sheetId" name="sheetId" placeholder="Enter Spreadsheet ID" required />
-  <label for="scoresSheet">Hoja de puntajes</label>
-  <input type="text" id="scoresSheet" name="scroresSheet" placeholder="Puntajes" required />
-  <label for="rewardsSheet">Hoja de recompensas</label>
-  <input type="text" id="rewardsSheet" name="rewardsSheet" placeholder="Recompensas" required />
-  <label for="pointsSheet">Hoja de configuracion de puntos</label>
-  <input type="text" id="pointsSheet" name="pointsSheet" placeholder="Puntos" required />
-  <button type="submit">Save Configuration</button>
-    </form>
-    <div id="msg" class="msg"></div>
-  </main>
 
+  <div id="adminProtected" style="display:none;">
+    <main class="card">
+      <div class="icon">🔒</div>
+      <h1>Admin Configuration</h1>
+      <form id="configForm">
+        <label for="sheetId">Google Spreadsheet ID</label>
+        <input type="text" id="sheetId" name="sheetId" placeholder="Enter Spreadsheet ID" required />
+        <label for="scoresSheet">Hoja de puntajes</label>
+        <input type="text" id="scoresSheet" name="scoresSheet" placeholder="Puntajes" required />
+        <label for="rewardsSheet">Hoja de recompensas</label>
+        <input type="text" id="rewardsSheet" name="rewardsSheet" placeholder="Recompensas" required />
+        <label for="pointsSheet">Hoja de configuracion de puntos</label>
+        <input type="text" id="pointsSheet" name="pointsSheet" placeholder="Puntos" required />
+        <button type="submit">Save Configuration</button>
+      </form>
+      <div id="msg" class="msg"></div>
+      <button id="logoutBtn" style="margin-top:18px;">Cerrar sesión</button>
+    </main>
+  </div>
+
+  <div id="loginPrompt" style="text-align:center; margin-top:80px;">
+    <h2>Acceso solo para administradores</h2>
+    <button id="loginBtn">Iniciar sesión</button>
+  </div>
+
+  <!-- Netlify Identity Widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="/admin/admin-script.js" defer></script>
 
 </body>
