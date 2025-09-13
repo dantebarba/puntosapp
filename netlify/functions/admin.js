@@ -16,11 +16,20 @@ export async function handler(event) {
   if (event.httpMethod === "POST") {
     try {
       const body = JSON.parse(event.body || "{}");
-      const { sheetId } = body;
+      const { sheetId, scoresSheetName, rewardsSheetName, pointsSheetName } = body;
       if (!sheetId) {
         return { statusCode: 400, body: JSON.stringify({ error: "Missing sheetId" }) };
       }
       await store.set("spreadsheet_id", sheetId);
+      if (scoresSheetName) {
+        await store.set("scores_sheet_name", scoresSheetName);
+      }
+      if (rewardsSheetName) {
+        await store.set("rewards_sheet_name", rewardsSheetName);
+      }
+      if (pointsSheetName) {
+        await store.set("points_sheet_name", pointsSheetName);
+      }
       return { statusCode: 200, body: JSON.stringify({ success: true }) };
     } catch (err) {
       console.error("!!! ERROR IN POST HANDLER !!!", err);
@@ -34,11 +43,13 @@ export async function handler(event) {
     try {
       console.log("Attempting to get 'spreadsheet_id' from blob store...");
       const sheetId = await store.get("spreadsheet_id");
-      console.log("Successfully retrieved value from store:", sheetId);
-
+      const scoresSheetName = await store.get("scores_sheet_name");
+      const rewardsSheetName = await store.get("rewards_sheet_name");
+      const pointsSheetName = await store.get("points_sheet_name");
+      console.log("Successfully retrieved value from store:", sheetId, scoresSheetName, rewardsSheetName, pointsSheetName);
       return {
         statusCode: 200,
-        body: JSON.stringify({ sheetId: sheetId || null }),
+        body: JSON.stringify({ sheetId: sheetId || null, scoresSheetName: scoresSheetName || null, rewardsSheetName: rewardsSheetName || null, pointsSheetName: pointsSheetName || null }),
       };
     } catch (err) {
       // THIS IS THE MOST IMPORTANT PART: We explicitly log the crash

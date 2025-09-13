@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- IMPORTANT: UPDATE THIS URL ---
   // This should be the public URL of your main rewards points page.
-  const BASE_URL = window.location.href;
+  // Usar solo el origen y pathname para evitar duplicar parámetros
+  const BASE_URL = window.location.origin;
 
   // --- DOM Element Selectors ---
   const qrCodeContainer = document.getElementById("qrCodeContainer");

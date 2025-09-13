@@ -14,9 +14,15 @@
     <div class="icon">🔒</div>
     <h1>Admin Configuration</h1>
     <form id="configForm">
-      <label for="sheetId">Google Spreadsheet ID</label>
-      <input type="text" id="sheetId" name="sheetId" placeholder="Enter Spreadsheet ID" required />
-      <button type="submit">Save Configuration</button>
+  <label for="sheetId">Google Spreadsheet ID</label>
+  <input type="text" id="sheetId" name="sheetId" placeholder="Enter Spreadsheet ID" required />
+  <label for="scoresSheet">Hoja de puntajes</label>
+  <input type="text" id="scoresSheet" name="scroresSheet" placeholder="Puntajes" required />
+  <label for="rewardsSheet">Hoja de recompensas</label>
+  <input type="text" id="rewardsSheet" name="rewardsSheet" placeholder="Recompensas" required />
+  <label for="pointsSheet">Hoja de configuracion de puntos</label>
+  <input type="text" id="pointsSheet" name="pointsSheet" placeholder="Puntos" required />
+  <button type="submit">Save Configuration</button>
     </form>
     <div id="msg" class="msg"></div>
   </main>

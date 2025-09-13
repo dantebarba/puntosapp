@@ -31,8 +31,68 @@ body {
   animation: fadeIn 1s ease-in-out;
 }
 
+
 .card-header, .logo, h1, #points, .loading {
   margin-bottom: 15px;
+}
+
+#userForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#userForm input[type="text"] {
+  width: 100%;
+  max-width: 260px;
+  box-sizing: border-box;
+}
+
+#userForm button {
+  width: 100%;
+  max-width: 260px;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+#userSubmitBtn {
+  position: relative;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: #b85c38;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 16px;
+  min-height: 38px;
+}
+
+#userSubmitBtn:disabled {
+  background: #9c4d2e;
+  cursor: not-allowed;
+}
+
+#btnSpinner {
+  display: none; /* Hidden by default, JS will show it */
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px; /* Vertically center */
+  box-sizing: border-box;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+#userError {
+  width: 100%;
+  max-width: 260px;
+  text-align: left;
+  margin-bottom: 8px;
 }
 
 .logo {
@@ -57,6 +117,10 @@ h1 { font-size: 24px; min-height: 29px; margin: 0; color: var(--primary-text-col
   user-select: none;
   pointer-events: none;
   transition: opacity 1s ease-out;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 @keyframes fall {

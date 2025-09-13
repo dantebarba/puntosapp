@@ -5,15 +5,32 @@ const userNameH1 = document.getElementById("userName");
 /**
  * Fetches and displays user points from an API.
  */
-async function loadPoints() {
+
+async function loadPoints(userIdFromForm) {
   const params = new URLSearchParams(window.location.search);
-  const userId = params.get("user");
+  let userId = params.get("user");
+  const userForm = document.getElementById("userForm");
+  const userError = document.getElementById("userError");
+  const userSubmitBtn = document.getElementById("userSubmitBtn");
+  const btnText = document.getElementById("btnText");
+  const btnSpinner = document.getElementById("btnSpinner");
+  if (!userId && userIdFromForm) userId = userIdFromForm;
 
   if (!userId) {
-    userNameH1.textContent = "Error";
-    pointsDiv.textContent = "Missing user parameter in URL";
+    userNameH1.textContent = "¡Bienvenido!";
+    pointsDiv.textContent = "";
+    if (userForm) userForm.style.display = "block";
+    if (userError) userError.textContent = "";
     pointsDiv.classList.remove("loading");
     return;
+  } else {
+    if (userForm) userForm.style.display = "none";
+    if (userError) userError.textContent = "";
+  }
+  if (userSubmitBtn && btnText && btnSpinner) {
+    userSubmitBtn.disabled = true;
+    btnText.style.display = "none"; // Hide text
+    btnSpinner.style.display = "inline-block"; // Show spinner
   }
 
   try {
@@ -26,15 +43,28 @@ async function loadPoints() {
 
     const data = await response.json();
 
-    userNameH1.textContent = `Hello, ${data.nombre || 'Guest'}!`;
-    pointsDiv.textContent = `${data.puntos || 0} pts`;
+  userNameH1.textContent = `Hola, ${data.nombre || 'Invitado'}!`;
+  pointsDiv.textContent = `${data.puntos || 0} pts`;
+  if (userError) userError.textContent = "";
 
   } catch (error) {
-    userNameH1.textContent = "Sorry!";
-    pointsDiv.textContent = error.message;
-    console.error("Failed to load points:", error);
+    if (error.message && error.message.includes("User not found")) {
+      if (userError) userError.textContent = "Usuario no encontrado. Verificá el código e intentá nuevamente.";
+      if (userForm) userForm.style.display = "block";
+      userNameH1.textContent = "¡Bienvenido!";
+      pointsDiv.textContent = "";
+    } else {
+      userNameH1.textContent = "Error";
+      pointsDiv.textContent = error.message;
+    }
+    console.error("No se pudieron cargar los puntos:", error);
   } finally {
     pointsDiv.classList.remove("loading");
+    if (userSubmitBtn && btnText && btnSpinner) {
+      userSubmitBtn.disabled = false;
+      btnText.style.display = "inline-block"; // Show text again
+      btnSpinner.style.display = "none"; // Hide spinner
+    }
   }
 }
 
@@ -77,5 +107,26 @@ function createFallingItem() {
 }
 
 // --- Initialize ---
-loadPoints();
-setInterval(createFallingItem, 400);
+
+// Manejar el formulario para ingresar el código de usuario
+document.addEventListener("DOMContentLoaded", () => {
+  const userForm = document.getElementById("userForm");
+  const userError = document.getElementById("userError");
+
+  if (userForm) {
+    userForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      if (userError) userError.textContent = "";
+      const userInput = document.getElementById("userInput").value.trim();
+      if (userInput) {
+        loadPoints(userInput);
+        // Opcional: actualizar la URL para reflejar el parámetro
+        const url = new URL(window.location);
+        url.searchParams.set("user", userInput);
+        window.history.replaceState({}, '', url);
+      }
+    });
+  }
+  loadPoints();
+  setInterval(createFallingItem, 400);
+});

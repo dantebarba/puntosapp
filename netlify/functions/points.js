@@ -24,9 +24,11 @@ export async function handler(event) {
     }
     // No .text() call is necessary with this configuration
 
-    // Expanded range to cover columns A through Z
-    const range = "Sheet1!A:Z"; 
-    const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${process.env.GOOGLE_API_KEY}`;
+  // Obtener el nombre de la hoja desde la configuración, por defecto Sheet1
+  let sheetName = await store.get("sheet_name");
+  if (!sheetName) sheetName = "Sheet1";
+  const range = `${sheetName}!A:Z`;
+  const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${process.env.GOOGLE_API_KEY}`;
 
     const response = await fetch(sheetsUrl);
     if (!response.ok) {

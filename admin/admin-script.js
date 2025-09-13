@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- DOM Element Selectors ---
   const configForm = document.getElementById("configForm");
   const sheetIdInput = document.getElementById("sheetId");
+  const scoresSheetInput = document.getElementById("scoresSheet");
+  const rewardsSheetInput = document.getElementById("rewardsSheet");
+  const pointsSheetInput = document.getElementById("pointsSheet");
   const msgDiv = document.getElementById("msg");
 
   // --- Constants ---
@@ -56,6 +59,15 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         msgDiv.textContent = "Enter a Spreadsheet ID to get started.";
       }
+      if (data.scoresSheetName && scoresSheetInput) {
+        scoresSheetInput.value = data.scoresSheetName;
+      }
+      if (data.rewardsSheetName && rewardsSheetInput) {
+        rewardsSheetInput.value = data.rewardsSheetName;
+      }
+      if (data.pointsSheetName && pointsSheetInput) {
+        pointsSheetInput.value = data.pointsSheetName;
+      }
     } catch (error) {
       msgDiv.textContent = `❌ Error: ${error.message}`;
       console.error(error);
@@ -69,18 +81,19 @@ document.addEventListener("DOMContentLoaded", () => {
   async function handleFormSubmit(event) {
     event.preventDefault();
     const sheetId = sheetIdInput.value.trim();
-    
+    const scoresSheetName = scoresSheetInput.value.trim() || "Puntajes";
+    const rewardsSheetName = rewardsSheetInput.value.trim() || "Recompensas";
+    const pointsSheetName = pointsSheetInput.value.trim() || "Puntos";
     if (!sheetId) {
       msgDiv.textContent = "Please enter a valid Spreadsheet ID.";
       return;
     }
-
     msgDiv.textContent = "Saving...";
     try {
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sheetId })
+        body: JSON.stringify({ sheetId, scoresSheetName, rewardsSheetName, pointsSheetName })
       });
 
       if (!response.ok) {
