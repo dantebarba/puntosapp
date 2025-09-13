@@ -16,12 +16,14 @@ async function loadPoints(userIdFromForm) {
   const btnSpinner = document.getElementById("btnSpinner");
   if (!userId && userIdFromForm) userId = userIdFromForm;
 
+  const congratsLabel = document.getElementById("congratsLabel");
   if (!userId) {
     userNameH1.textContent = "¡Bienvenido!";
     pointsDiv.textContent = "";
     if (userForm) userForm.style.display = "block";
     if (userError) userError.textContent = "";
     pointsDiv.classList.remove("loading");
+    if (congratsLabel) congratsLabel.style.display = "none";
     return;
   } else {
     if (userForm) userForm.style.display = "none";
@@ -43,12 +45,48 @@ async function loadPoints(userIdFromForm) {
 
     const data = await response.json();
 
-  userNameH1.textContent = `Hola, ${data.nombre || 'Invitado'}!`;
-  pointsDiv.textContent = `${data.puntos || 0} pts`;
-  if (userError) userError.textContent = "";
-  // Mostrar tabla de premios y tabla de puntos
-  showRewardsTable();
-  showPointsTable();
+    userNameH1.textContent = `Hola, ${data.nombre || 'Invitado'}!`;
+    pointsDiv.textContent = `${data.puntos || 0} pts`;
+    if (userError) userError.textContent = "";
+
+
+    // Calcular el premio canjeable en el frontend usando la tabla de rewards
+    if (congratsLabel) {
+      congratsLabel.style.display = "none";
+      let puntos = parseInt(data.puntos, 10) || 0;
+      try {
+        const rewardsRes = await fetch("/.netlify/functions/rewards");
+        if (rewardsRes.ok) {
+          const rewards = await rewardsRes.json();
+          if (Array.isArray(rewards) && rewards.length > 0) {
+            // Filtrar premios con puntos numéricos y que el usuario pueda canjear
+            const canjeables = rewards
+              .filter(r => r.puntos && !isNaN(parseInt(r.puntos, 10)))
+              .map(r => ({ ...r, puntos: parseInt(r.puntos, 10) }))
+              .filter(r => puntos >= r.puntos)
+              .sort((a, b) => a.puntos - b.puntos);
+            if (canjeables.length > 0) {
+              const premio = canjeables[canjeables.length - 1].descripcion;
+              congratsLabel.innerHTML = `
+                <div style="background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;">
+                  <div style="font-weight:700;font-size:21px;margin-bottom:6px;">¡Felicitaciones!, tenés <span style='color:#e07a5f;'>${premio}</span> gratis!</div>
+                  <div style="font-size:16px;margin-top:6px;">
+                    Canjea tus premios haciendo <a href="#rewardsTableContainer" style="color:#b85c38;text-decoration:underline;font-weight:600;">click aquí</a>
+                  </div>
+                </div>
+              `;
+              congratsLabel.style.display = "block";
+            }
+          }
+        }
+      } catch (e) {
+        // Si falla, no mostrar nada
+      }
+    }
+
+    // Mostrar tabla de premios y tabla de puntos
+    showRewardsTable();
+    showPointsTable();
 // Consulta y muestra la tabla de puntos debajo de la tabla de premios
 async function showPointsTable() {
   const container = document.getElementById("pointsTableContainer");
@@ -127,6 +165,7 @@ async function showRewardsTable() {
 }
 
   } catch (error) {
+    if (congratsLabel) congratsLabel.style.display = "none";
     if (error.message && error.message.includes("User not found")) {
       if (userError) userError.textContent = "Usuario no encontrado. Verificá el código e intentá nuevamente.";
       if (userForm) userForm.style.display = "block";
