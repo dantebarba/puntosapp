@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'RaileyCustom'; /* You can name this whatever you want */
+  src: url('https://res.cloudinary.com/dctrptn13/raw/upload/v1757810769/Railey-PersonalUse_zgy6rb.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* This is a best practice! */
+}
+
 .collapsible-content {
   overflow: hidden;
   transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
@@ -33,7 +41,7 @@ body {
 }
 /* Tablas usan Railey */
 table, th, td {
-  font-family: 'Railey', cursive, sans-serif;
+  font-family:  'Montserrat', Arial, sans-serif;
 }
 
 /* Títulos y elementos principales usan Montserrat */
@@ -212,6 +220,12 @@ h1 { font-size: 24px; min-height: 29px; margin: 0; color: var(--primary-text-col
   user-select: none;
   pointer-events: none;
   transition: opacity 1s ease-out;
+}
+
+.card-table-title {
+  font-weight: bold;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 25px;
 }
 
 @keyframes spin {

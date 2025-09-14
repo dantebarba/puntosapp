@@ -117,7 +117,7 @@ async function loadPoints(userIdFromForm) {
 async function showPointsTable() {
   const container = document.getElementById("pointsTableContainer");
   if (!container) return;
-  const title = '<button id="togglePointsTable" style="width:100%;text-align:left;color:#b85c38;font-size:20px;margin:0 0 8px 0;padding:14px 16px;background:#fff;border:2px solid #b85c38;outline:none;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:10px;box-sizing:border-box;transition:background 0.2s, border-color 0.2s;"><span style="font-weight:bold;">Puntos</span><span id="arrowPoints" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
+  const title = '<button id="togglePointsTable" style="width:100%;text-align:left;color:#b85c38;font-size:20px;margin:0 0 8px 0;padding:14px 16px;background:#fff;border:2px solid #b85c38;outline:none;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:10px;box-sizing:border-box;transition:background 0.2s, border-color 0.2s;"><span class="card-table-title">Puntos</span><span id="arrowPoints" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
     container.innerHTML = title + '<div id="pointsTableContent" class="collapsible-content" style="display:block;"><div class="loading">Cargando tabla de puntos...</div></div>';
   try {
     const res = await fetch("/.netlify/functions/purchase-points");
@@ -155,7 +155,7 @@ async function showPointsTable() {
 async function showRewardsTable() {
   const container = document.getElementById("rewardsTableContainer");
   if (!container) return;
-  const title = '<button id="toggleRewardsTable" style="width:100%;text-align:left;color:#b85c38;font-size:20px;margin:0 0 8px 0;padding:14px 16px;background:#fff;border:2px solid #b85c38;outline:none;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:10px;box-sizing:border-box;transition:background 0.2s, border-color 0.2s;"><span style="font-weight:bold;">Premios</span><span id="arrowRewards" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
+  const title = '<button id="toggleRewardsTable" style="width:100%;text-align:left;color:#b85c38;font-size:20px;margin:0 0 8px 0;padding:14px 16px;background:#fff;border:2px solid #b85c38;outline:none;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:10px;box-sizing:border-box;transition:background 0.2s, border-color 0.2s;"><span class="card-table-title">Premios</span><span id="arrowRewards" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
   container.innerHTML = title + '<div id="rewardsTableContent" class="collapsible-content" style="display:block;"><div class="loading">Cargando premios...</div></div>';
   try {
     const res = await fetch("/.netlify/functions/rewards");
