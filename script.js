@@ -24,10 +24,20 @@ async function loadPoints(userIdFromForm) {
     if (userError) userError.textContent = "";
     pointsDiv.classList.remove("loading");
     if (congratsLabel) congratsLabel.style.display = "none";
+    // Ocultar contenedores de tablas cuando no hay usuario
+    const rewardsContainer = document.getElementById("rewardsTableContainer");
+    const pointsContainer = document.getElementById("pointsTableContainer");
+    if (rewardsContainer) rewardsContainer.style.display = "none";
+    if (pointsContainer) pointsContainer.style.display = "none";
     return;
   } else {
     if (userForm) userForm.style.display = "none";
     if (userError) userError.textContent = "";
+    // Mostrar contenedores de tablas cuando hay usuario
+    const rewardsContainer = document.getElementById("rewardsTableContainer");
+    const pointsContainer = document.getElementById("pointsTableContainer");
+    if (rewardsContainer) rewardsContainer.style.display = "block";
+    if (pointsContainer) pointsContainer.style.display = "block";
   }
   if (userSubmitBtn && btnText && btnSpinner) {
     userSubmitBtn.disabled = true;
@@ -46,7 +56,7 @@ async function loadPoints(userIdFromForm) {
     const data = await response.json();
 
     userNameH1.textContent = `Hola, ${data.nombre || 'Invitado'}!`;
-    pointsDiv.textContent = `${data.puntos || 0} pts`;
+    pointsDiv.textContent = `Tenés ${data.puntos || 0} puntos`;
     if (userError) userError.textContent = "";
 
 
@@ -72,7 +82,7 @@ async function loadPoints(userIdFromForm) {
                 <div style=\"background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;\">
                   <div style=\"font-weight:700;font-size:21px;margin-bottom:6px;\">¡Felicitaciones!, tenés <span style='color:#e07a5f;'>${premio}</span> gratis!</div>
                   <div style=\"font-size:16px;margin-top:6px;\">
-                    Canjea tus premios haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
+                    Canjea tus premios haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
                   </div>
                 </div>
               `;
@@ -86,7 +96,7 @@ async function loadPoints(userIdFromForm) {
                   <div style=\"background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;\">
                     <div style=\"font-weight:700;font-size:21px;margin-bottom:6px;\">¡Te faltan <span style='color:#e07a5f;'>${falta}</span> puntos para llegar a <span style='color:#e07a5f;'>${next.descripcion}</span> gratis!</div>
                     <div style=\"font-size:16px;margin-top:6px;\">
-                      Hace tu próximo pedido haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
+                      Hace tu próximo pedido haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
                     </div>
                   </div>
                 `;
@@ -182,6 +192,12 @@ async function showRewardsTable() {
 
   } catch (error) {
     if (congratsLabel) congratsLabel.style.display = "none";
+    // Ocultar contenedores de tablas en caso de error
+    const rewardsContainer = document.getElementById("rewardsTableContainer");
+    const pointsContainer = document.getElementById("pointsTableContainer");
+    if (rewardsContainer) rewardsContainer.style.display = "none";
+    if (pointsContainer) pointsContainer.style.display = "none";
+
     if (error.message && error.message.includes("User not found")) {
       if (userError) userError.textContent = "Usuario no encontrado. Verificá el código e intentá nuevamente.";
       if (userForm) userForm.style.display = "block";
