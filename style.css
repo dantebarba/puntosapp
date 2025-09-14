@@ -19,13 +19,24 @@
 }
 /* Define theme variables */
 :root {
-  --background-color: #fbe3b3; /* New Background */
-  --card-background: #ffffff;  /* New Ternary */
-  --primary-text-color: #333;
+  --background-color: #ffe4b3; /* New Background */
+  --card-background: #fff4e1;  /* New Ternary */
+  --primary-text-color: #8b5445;
   --secondary-text-color: #666;
-  --accent-color: #dd6740;      /* New Primary */
+  --accent-color: #de6742;      /* New Primary */
   --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   --border-radius: 20px;
+  
+  /* Colores de mensajes y tablas */
+  --message-background: var(--background-color);
+  --message-border: #8b5445;
+  --message-highlight: var(--accent-color);
+  --message-shadow: #b85c3822;
+  --table-border: var(--background-color);
+  --table-header-color: #8b5445;
+  --table-button-background: var(--background-color);
+  --table-button-border: #8b5445;
+  --table-button-text: #8b5445;
 }
 
 
@@ -241,7 +252,106 @@ h1 { font-size: 24px; min-height: 29px; margin: 0; color: var(--primary-text-col
   }
 }
 
+/* Estilos para mensajes y tablas */
+.data-table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  border-bottom: 1px solid var(--table-border);
+  padding: 6px 4px;
+  font-size: 15px;
+  color: var(--table-header-color);
+}
+
+.data-table td {
+  padding: 6px 4px;
+  font-size: 15px;
+}
+
+.data-table .text-left {
+  text-align: left;
+}
+
+.data-table .text-center {
+  text-align: center;
+}
+
+.data-table-notes {
+  text-align: left;
+  font-size: 13px;
+  color: var(--accent-color);
+  margin-top: 6px;
+  font-family: Montserrat, Arial, sans-serif;
+}
+
+.message-container {
+  background: var(--message-background);
+  border: 2px solid var(--message-border);
+  color: var(--message-border);
+  padding: 18px 16px;
+  margin: 18px 0 0 0;
+  border-radius: 12px;
+  font-size: 19px;
+  font-family: Montserrat, Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 2px 8px var(--message-shadow);
+}
+
+.message-title {
+  font-weight: 700;
+  font-size: 21px;
+  margin-bottom: 6px;
+}
+
+.message-highlight {
+  color: var(--message-highlight);
+}
+
+.message-link {
+  color: var(--message-border);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.table-button {
+  width: 100%;
+  text-align: left;
+  color: var(--table-button-text);
+  font-size: 20px;
+  margin: 0 0 8px 0;
+  padding: 14px 16px;
+  background: var(--table-button-background);
+  border: 2px solid var(--table-button-border);
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.table-header {
+  border-bottom: 1px solid var(--table-border);
+  padding: 6px 4px;
+  font-size: 15px;
+  color: var(--table-header-color);
+}
+
+.table-footer {
+  text-align: left;
+  font-size: 13px;
+  color: var(--table-header-color);
+  margin-top: 6px;
+  font-family: Montserrat, Arial, sans-serif;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to   { opacity: 1; transform: scale(1); }
 }
+

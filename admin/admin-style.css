@@ -1,10 +1,10 @@
 /* Define theme variables */
 :root {
-  --background-color: #fbe3b3; /* New Background */
+  --background-color: #ffe4b3; /* New Background */
   --card-background: #ffffff;
   --primary-text-color: #333;
   --secondary-text-color: #666;
-  --accent-color: #dd6740;      /* New Primary */
+  --accent-color: #de6742;      /* New Primary */
   --border-color: #ddd;
   --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   --border-radius-lg: 20px;

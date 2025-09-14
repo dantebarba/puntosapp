@@ -77,12 +77,12 @@ async function loadPoints(userIdFromForm) {
             // Premios que puede canjear
             const canjeables = rewardsList.filter(r => puntos >= r.puntos);
             if (canjeables.length > 0) {
-              const premio = canjeables[canjeables.length - 1].descripcion;
+              const premio = canjeables[canjeables.length - 1].descripción;
               congratsLabel.innerHTML = `
-                <div style=\"background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;\">
-                  <div style=\"font-weight:700;font-size:21px;margin-bottom:6px;\">¡Felicitaciones!, tenés <span style='color:#e07a5f;'>${premio}</span> gratis!</div>
-                  <div style=\"font-size:16px;margin-top:6px;\">
-                    Canjea tus premios haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
+                <div class="message-container">
+                  <div class="message-title">¡Felicitaciones! tenés <span class="message-highlight">${premio}</span> gratis!</div>
+                  <div style="font-size:16px;margin-top:6px;">
+                    Canjea tus premios haciendo <a href="https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1" target="_blank" rel="noopener noreferrer" class="message-link">click aquí</a>
                   </div>
                 </div>
               `;
@@ -93,10 +93,10 @@ async function loadPoints(userIdFromForm) {
               if (next) {
                 const falta = next.puntos - puntos;
                 congratsLabel.innerHTML = `
-                  <div style=\"background:#fff7e6;border:2px solid #b85c38;color:#b85c38;padding:18px 16px;margin:18px 0 0 0;border-radius:12px;font-size:19px;font-family:Montserrat,Arial,sans-serif;text-align:center;box-shadow:0 2px 8px #b85c3822;\">
-                    <div style=\"font-weight:700;font-size:21px;margin-bottom:6px;\">¡Te faltan <span style='color:#e07a5f;'>${falta}</span> puntos para llegar a <span style='color:#e07a5f;'>${next.descripcion}</span> gratis!</div>
-                    <div style=\"font-size:16px;margin-top:6px;\">
-                      Hace tu próximo pedido haciendo <a href=\"https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#b85c38;text-decoration:underline;font-weight:600;\">click aquí</a>
+                  <div class="message-container">
+                    <div class="message-title">¡Te faltan <span class="message-highlight">${falta}</span> puntos para llegar a <span class="message-highlight">${next.descripcion}</span> gratis!</div>
+                    <div style="font-size:16px;margin-top:6px;">
+                      Hace tu próximo pedido haciendo <a href="https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1" target="_blank" rel="noopener noreferrer" class="message-link">click aquí</a>
                     </div>
                   </div>
                 `;
@@ -117,7 +117,7 @@ async function loadPoints(userIdFromForm) {
 async function showPointsTable() {
   const container = document.getElementById("pointsTableContainer");
   if (!container) return;
-  const title = '<button id="togglePointsTable" style="width:100%;text-align:left;color:#b85c38;font-size:20px;margin:0 0 8px 0;padding:14px 16px;background:#fff;border:2px solid #b85c38;outline:none;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:10px;box-sizing:border-box;transition:background 0.2s, border-color 0.2s;"><span class="card-table-title">Puntos</span><span id="arrowPoints" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
+  const title = '<button id="togglePointsTable" class="table-button"><span class="card-table-title">Puntos</span><span id="arrowPoints" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
     container.innerHTML = title + '<div id="pointsTableContent" class="collapsible-content" style="display:block;"><div class="loading">Cargando tabla de puntos...</div></div>';
   try {
     const res = await fetch("/.netlify/functions/purchase-points");
@@ -129,23 +129,23 @@ async function showPointsTable() {
       return;
     }
     // Mostrar solo columnas Descripcion, Cantidad, Puntaje
-    const allowedHeaders = ["descripcion", "cantidad", "puntaje"];
-    let table = '<table style="width:100%;margin-top:12px;border-collapse:collapse;"><thead><tr>';
+    const allowedHeaders = ["descripción", "puntos"];
+    let table = '<table class="data-table"><thead><tr>';
       allowedHeaders.forEach(h => {
-        const align = h.toLowerCase() === "descripcion" ? "left" : "center";
-        table += `<th style='border-bottom:1px solid #eee;padding:6px 4px;text-align:${align};font-size:15px;color:#b85c38;'>${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
+        const align = h.toLowerCase() === "descripción" ? "text-left" : "text-center";
+        table += `<th class="${align}">${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
     });
     table += '</tr></thead><tbody>';
     points.forEach(row => {
       table += '<tr>';
       allowedHeaders.forEach(h => {
-        const align = h === "descripcion" ? "left" : "center";
-        table += `<td style='padding:6px 4px;font-size:15px;text-align:${align};'>${row[h] || ''}</td>`;
+        const align = h === "descripción" ? "text-left" : "text-center";
+        table += `<td class="${align}">${row[h] || ''}</td>`;
       });
       table += '</tr>';
     });
     table += '</tbody></table>';
-  if (content) content.innerHTML = table + '<div style="text-align:left;font-size:13px;color:#b85c38;margin-top:6px;font-family:Montserrat,Arial,sans-serif">(*) por única vez</div>';
+  if (content) content.innerHTML = table + '<div class="data-table-notes">(*) por única vez</div>';
   } catch (err) {
   const content = document.getElementById("pointsTableContent");
   if (content) content.innerHTML = `<div class='loading'>Error al cargar tabla de puntos</div>`;
@@ -155,7 +155,7 @@ async function showPointsTable() {
 async function showRewardsTable() {
   const container = document.getElementById("rewardsTableContainer");
   if (!container) return;
-  const title = '<button id="toggleRewardsTable" style="width:100%;text-align:left;color:#b85c38;font-size:20px;margin:0 0 8px 0;padding:14px 16px;background:#fff;border:2px solid #b85c38;outline:none;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:10px;box-sizing:border-box;transition:background 0.2s, border-color 0.2s;"><span class="card-table-title">Premios</span><span id="arrowRewards" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
+  const title = '<button id="toggleRewardsTable" class="table-button"><span class="card-table-title">Premios</span><span id="arrowRewards" style="margin-left:auto;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></button>';
   container.innerHTML = title + '<div id="rewardsTableContent" class="collapsible-content" style="display:block;"><div class="loading">Cargando premios...</div></div>';
   try {
     const res = await fetch("/.netlify/functions/rewards");
@@ -167,23 +167,23 @@ async function showRewardsTable() {
       return;
     }
     // Mostrar solo columnas Descripcion y Puntos
-    const allowedHeaders = ["descripcion", "puntos"];
-    let table = '<table style="width:100%;margin-top:12px;border-collapse:collapse;"><thead><tr>';
+    const allowedHeaders = ["descripción", "puntos"];
+    let table = '<table class="data-table"><thead><tr>';
       allowedHeaders.forEach(h => {
-        const align = h.toLowerCase() === "descripcion" ? "left" : "center";
-        table += `<th style='border-bottom:1px solid #eee;padding:6px 4px;text-align:${align};font-size:15px;color:#b85c38;'>${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
+        const align = h.toLowerCase() === "descripción" ? "text-left" : "text-center";
+        table += `<th class="${align}">${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
     });
     table += '</tr></thead><tbody>';
     rewards.forEach(row => {
       table += '<tr>';
       allowedHeaders.forEach(h => {
-          const align = h.toLowerCase() === "descripcion" ? "left" : "center";
-          table += `<td style='padding:6px 4px;font-size:15px;text-align:${align};'>${row[h] || ''}</td>`;
+          const align = h.toLowerCase() === "descripción" ? "text-left" : "text-center";
+          table += `<td class="${align}">${row[h] || ''}</td>`;
       });
       table += '</tr>';
     });
     table += '</tbody></table>';
-  if (content) content.innerHTML = table  + '<div style="text-align:left;font-size:13px;color:#b85c38;margin-top:6px;font-family:Montserrat,Arial,sans-serif">(*) canje minimo 300 pts</div>';
+  if (content) content.innerHTML = table  + '<div class="data-table-notes">(*) canje minimo 300 pts</div>';
   } catch (err) {
   const content = document.getElementById("rewardsTableContent");
   if (content) content.innerHTML = `<div class='loading'>Error al cargar premios</div>`;
