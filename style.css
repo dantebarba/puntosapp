@@ -59,6 +59,31 @@ h1, h2, h3, h4, h5, h6, label, button, .logo, .icon, #userName, #points, .loadin
   margin-bottom: 15px;
 }
 
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+.loading {
+  color: var(--secondary-text-color);
+  animation: pulse 1.5s ease-in-out infinite;
+  font-size: 0.9em;
+  letter-spacing: 0.2px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Estilo para cuando el contenido real se carga */
+#rewardsTableContainer table,
+#pointsTableContainer table,
+#congratsLabel:not(:empty) {
+  animation: fadeIn 0.5s ease-out;
+}
+
 /* --- User Form Rediseñado --- */
 #userForm {
   display: flex;
