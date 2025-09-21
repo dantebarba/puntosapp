@@ -1,149 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Reward Points</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fdf6e3; /* vanilla background */
-      font-family: "Segoe UI", sans-serif;
-      overflow: hidden;
-    }
-
-    .card {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      padding: 40px 60px;
-      text-align: center;
-      z-index: 10;
-      animation: fadeIn 1s ease;
-      min-width: 300px;
-    }
-
-    .icon {
-      font-size: 70px;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-size: 24px;
-      margin: 0;
-      color: #333;
-      min-height: 29px;
-    }
-
-    #points {
-      font-size: 42px;
-      font-weight: bold;
-      color: #b85c38;
-      margin-top: 15px;
-      min-height: 50px;
-    }
-
-    .loading {
-      color: #666;
-      font-style: italic;
-      font-size: 20px;
-    }
-
-    /* falling cinnamon rolls */
-    .snowflake {
-      position: fixed;
-      top: -50px;
-      font-size: 32px;
-      animation-name: fall;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-      user-select: none;
-      pointer-events: none;
-    }
-
-    @keyframes fall {
-      0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.8; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tus puntos en Rolu</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <div class="card">
-    <div class="icon">🍩</div>
-    <h1 id="userName">Welcome!</h1>
-    <div id="points" class="loading">Loading...</div>
-  </div>
 
-  <script>
-    async function loadPoints() {
-      const params = new URLSearchParams(window.location.search);
-      // We read `?user=` from the URL for simplicity
-      const userId = params.get("user");
-      const pointsDiv = document.getElementById("points");
-      const userNameH1 = document.getElementById("userName");
+  <main class="card">
+    <div class="card-header">
+      <img src="https://res.cloudinary.com/dctrptn13/image/upload/v1757811104/logo-rolu-nuevo_mccmn3.png"
+        alt="Company Logo" class="logo" />
+      <h1 id="userName">¡Bienvenido!</h1>
+    </div>
+    <div id="points" class="loading" role="status" aria-live="polite" aria-busy="true">Cargando...</div>
+    <div id="congratsLabel" style="display:none;"></div>
+    <div id="rewardsTableContainer" style="margin-top:32px;" aria-busy="true">
+      <div class="loading" role="status" aria-live="polite">Cargando recompensas disponibles...</div>
+    </div>
+    <div id="pointsTableContainer" style="margin-top:32px;" aria-busy="true">
+      <div class="loading" role="status" aria-live="polite">Cargando historial de puntos...</div>
+    </div>
+    <form id="userForm" hidden style="margin-top:28px;">
+      <label for="userInput"
+        style="font-size:17px; font-weight:600; display:block; margin-bottom:8px; letter-spacing:0.2px;">Ingresá tu
+        código de usuario</label>
+      <div class="user-input-wrapper">
+        <span class="user-icon" aria-hidden="true">👤</span>
+        <input type="text" id="userInput" name="userInput" required placeholder="Ej: 2215552020" autocomplete="off"
+          maxlength="32" inputmode="text" autocapitalize="characters" spellcheck="false" aria-describedby="userError" />
+      </div>
+      <div id="userError" role="alert"></div>
+      <button id="userSubmitBtn" type="submit">
+        <span id="btnText">Ver puntos</span>
+        <span id="btnSpinner" aria-hidden="true"></span>
+      </button>
+    </form>
+  </main>
 
-      if (!userId) {
-        userNameH1.textContent = "Error";
-        pointsDiv.textContent = "Missing ?user param in URL";
-        pointsDiv.classList.remove("loading");
-        return;
-      }
+  <script src="script.js" type="module"></script>
 
-      try {
-        // The API expects `?userid=`, so we use that in the fetch URL
-        const res = await fetch(`/.netlify/functions/points?userid=${userId}`);
-
-        // Check for 404 Not Found or other server errors
-        if (!res.ok) {
-          if (res.status === 404) {
-            userNameH1.textContent = "Sorry!";
-            pointsDiv.textContent = "User not found";
-          } else {
-            throw new Error(`Server error: ${res.status}`);
-          }
-          return;
-        }
-        
-        const data = await res.json();
-
-        // Update the UI with the data from the API response
-        userNameH1.textContent = data.nombre || "Welcome!";
-        pointsDiv.textContent = `${data.puntos || 0} pts`;
-
-      } catch (err) {
-        userNameH1.textContent = "Error";
-        pointsDiv.textContent = "Could not load points";
-        console.error(err);
-      } finally {
-        pointsDiv.classList.remove("loading");
-      }
-    }
-
-    loadPoints();
-
-    // cinnamon roll snow effect
-    const rolls = ["🍥","🥐","🍩"];
-    function createSnowflake() {
-      const snowflake = document.createElement("div");
-      snowflake.classList.add("snowflake");
-      snowflake.textContent = rolls[Math.floor(Math.random() * rolls.length)];
-      snowflake.style.left = Math.random() * window.innerWidth + "px";
-      snowflake.style.animationDuration = (4 + Math.random() * 6) + "s";
-      snowflake.style.fontSize = (24 + Math.random() * 32) + "px";
-      document.body.appendChild(snowflake);
-
-      setTimeout(() => snowflake.remove(), 10000);
-    }
-
-    setInterval(createSnowflake, 500);
-  </script>
 </body>
+
 </html>
