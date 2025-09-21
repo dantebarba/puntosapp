@@ -16,9 +16,16 @@ export async function handler(event) {
         body: JSON.stringify({ error: "Spreadsheet ID not configured." }),
       };
     }
-    // Sheet name for purchase points config
-    const sheetName = "Puntos";
+   // Sheet name for purchase points config (configurable)  
+    const configuredSheetName = await store.get("points_sheet_name");  
+    const sheetName = configuredSheetName || "Puntos";  
     const range = `${sheetName}!A:Z`;
+    if (!process.env.GOOGLE_API_KEY) {  
+      return {  
+        statusCode: 500,  
+        body: JSON.stringify({ error: "Missing GOOGLE_API_KEY" }),  
+      };  
+    }
     const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${process.env.GOOGLE_API_KEY}`;
 
     const response = await fetch(sheetsUrl);
