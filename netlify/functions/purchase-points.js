@@ -59,6 +59,7 @@ export async function handler(event) {
     });
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=60" },
       body: JSON.stringify(pointsConfig),
     };
   } catch (err) {

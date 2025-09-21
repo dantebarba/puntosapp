@@ -24,11 +24,17 @@ export async function handler(event) {
     }
     // No .text() call is necessary with this configuration
 
-  // Obtener el nombre de la hoja desde la configuración, por defecto Sheet1
-  let sheetName = await store.get("sheet_name");
-  if (!sheetName) sheetName = "Sheet1";
-  const range = `${sheetName}!A:Z`;
-  const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${process.env.GOOGLE_API_KEY}`;
+    // Obtener el nombre de la hoja desde la configuración, por defecto Sheet1
+    const configuredSheetName = await store.get("scores_sheet_name") || "Puntajes";
+    const sheetName = configuredSheetName || "Puntajes";
+    const range = `${sheetName}!A:Z`;
+    if (!process.env.GOOGLE_API_KEY) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Missing GOOGLE_API_KEY" }),
+      };
+    }
+    const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${process.env.GOOGLE_API_KEY}`;
 
     const response = await fetch(sheetsUrl);
     if (!response.ok) {
@@ -73,6 +79,7 @@ export async function handler(event) {
     if (userRecord) {
       return {
         statusCode: 200,
+        headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=60" },
         body: JSON.stringify(userRecord),
       };
     } else {

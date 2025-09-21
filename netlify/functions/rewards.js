@@ -17,8 +17,15 @@ export async function handler(event) {
       };
     }
     // Sheet name for rewards
-    const sheetName = "Recompensas";
+    const configuredSheetName = await store.get("rewards_sheet_name"); 
+    const sheetName = configuredSheetName || "Recompensas";
     const range = `${sheetName}!A:Z`;
+    if (!process.env.GOOGLE_API_KEY) {  
+      return {  
+        statusCode: 500,  
+        body: JSON.stringify({ error: "Missing GOOGLE_API_KEY" }),  
+      };  
+    }
     const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${process.env.GOOGLE_API_KEY}`;
 
     const response = await fetch(sheetsUrl);
@@ -52,6 +59,7 @@ export async function handler(event) {
     });
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=60" },
       body: JSON.stringify(rewards),
     };
   } catch (err) {
