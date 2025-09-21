@@ -46,8 +46,7 @@ async function loadPoints(userIdFromForm) {
   }
 
   try {
-    const response = await fetch(`/.netlify/functions/points?userid=${userId}`);
-
+    const response = await fetch(`/.netlify/functions/points?userid=${encodeURIComponent(userId)}`);
     if (!response.ok) {
       const message = response.status === 404 ? "User not found" : `Server error: ${response.status}`;
       throw new Error(message);
