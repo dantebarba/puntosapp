@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function showAdminPanel() {
       if (adminProtected) adminProtected.style.display = "block";
       if (loginPrompt) loginPrompt.style.display = "none";
+      loadConfig();
     }
     function showLoginPrompt() {
       if (adminProtected) adminProtected.style.display = "none";
@@ -201,9 +202,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  // Quitar la lluvia de emojis en admin panel (no iniciar animación)
-
-  // Load the initial configuration
-  loadConfig();
-  
+  // Quitar la lluvia de emojis en admin panel (no iniciar animación)  
 });
