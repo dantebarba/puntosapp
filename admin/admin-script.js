@@ -116,7 +116,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     msgDiv.textContent = "Loading current configuration...";
     try {
-      const response = await fetch(API_ENDPOINT);
+      // Helper: build Authorization header if login is enabled and a user is logged in
+      async function getAuthHeaders() {
+        if (!loginEnabled || !window.netlifyIdentity) return {};
+        const user = window.netlifyIdentity.currentUser?.();
+        if (!user) return {};
+        const token = await user.jwt();
+        return { Authorization: `Bearer ${token}` };
+      }
+
+      const headers = await getAuthHeaders();
+      const response = await fetch(API_ENDPOINT, { headers, cache: "no-store" });
       if (!response.ok) {
         throw new Error("Could not fetch config from the server.");
       }
