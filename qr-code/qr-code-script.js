@@ -28,17 +28,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Construct the final URL for the QR code
     const finalUrl = `${BASE_URL}?user=${encodeURIComponent(userId)}`;
 
+    // Get computed background color from CSS variables
+    const cardBackground = getComputedStyle(document.documentElement)
+      .getPropertyValue('--card-background').trim();
+
+    const textColor = getComputedStyle(document.documentElement)
+      .getPropertyValue('--primary-text-color').trim();
+
+    console.log(cardBackground, textColor);
+    
     // Generate the QR code
-    new QRCode(qrCodeContainer, {
+    const qr = new QRCode(qrCodeContainer, {
       text: finalUrl,
       width: 256,
       height: 256,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
+      colorDark: textColor, // Using primary text color
+      colorLight: cardBackground, // Using card background color with fallback
       correctLevel: QRCode.CorrectLevel.H,
     });
 
-    titleH1.textContent = `Guardá tu QR y sumá puntos`;
+    titleH1.textContent = `Guardá tu QR y sumá puntos!`;
     msgDiv.textContent = "Escanea el código QR para acceder a tus puntos";
 
     // Set up the download link after a short delay to ensure the canvas is rendered
@@ -58,4 +67,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // Generate the QR code as soon as the page is ready.
   generateQRCodeFromURL();
 });
-
