@@ -23,16 +23,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginPrompt = document.getElementById("loginPrompt");
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
+    const loginErrorMessage = document.getElementById("loginErrorMessage");
 
+    loginErrorMessage.hidden = true;
+    loginErrorMessage.textContent = "";
+
+
+    function showLoginErrorMessage() {
+      // Error message format https://myapp.app/admin/#error=access_denied&error_description=Signups+not+allowed+for+this+instance
+      // load the error message into the loginErrorMessage label
+      const hash = window.location.hash;
+      if (hash.includes("error=")) {
+        const params = new URLSearchParams(hash.slice(1)); // remove the #
+        const error = params.get("error");
+        const description = params.get("error_description");
+        let message = "Error during login:";
+        if (error) {
+          message += ` ${error.replace(/_/g, " ")}.`;
+        }
+        if (description) {
+          message += ` ${description.replace(/\+/g, " ")}.`;
+        }
+        if (loginErrorMessage) {
+          loginErrorMessage.textContent = message;
+          loginErrorMessage.hidden = false;
+        }
+      }
+    }
     function showAdminPanel() {
       if (adminProtected) adminProtected.style.display = "block";
       if (loginPrompt) loginPrompt.style.display = "none";
       loadConfig();
     }
     function showLoginPrompt() {
+      if (loginErrorMessage) showLoginErrorMessage();
       if (adminProtected) adminProtected.style.display = "none";
       if (loginPrompt) loginPrompt.style.display = "block";
     }
+
 
     if (!loginEnabled) {
       showAdminPanel();
@@ -81,31 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Constants ---
   const API_ENDPOINT = "/.netlify/functions/admin";
 
-  // --- Functions ---
-
-  /**
-   * Creates and animates a single falling emoji.
-   */
-  function createFallingItem() {
-    const ITEMS = ["🍥", "🥐", "🍩"];
-    const item = document.createElement("div");
-    const duration = 4 + Math.random() * 6; // 4s to 10s
-    const fontSize = 22 + Math.random() * 28; // 22px to 50px
-
-    item.classList.add("falling-item");
-    item.textContent = ITEMS[Math.floor(Math.random() * ITEMS.length)];
-    item.style.left = `${Math.random() * 100}vw`;
-    item.style.animationDuration = `${duration}s`;
-    item.style.fontSize = `${fontSize}px`;
-    
-    document.body.appendChild(item);
-
-    // Remove the item from the DOM after its animation is complete
-    setTimeout(() => {
-      item.remove();
-    }, duration * 1000);
-  }
-
   /**
    * Fetches and displays the current configuration on page load.
    */
@@ -115,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Required elements for loadConfig are not found in the DOM.");
       return;
     }
-    msgDiv.textContent = "Loading current configuration...";
+    msgDiv.textContent = "Cargando configuración actual...";
     try {
       // Helper: build Authorization header if login is enabled and a user is logged in
       async function getAuthHeaders() {
@@ -129,15 +132,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const headers = await getAuthHeaders();
       const response = await fetch(API_ENDPOINT, { headers, cache: "no-store" });
       if (!response.ok) {
-        throw new Error("Could not fetch config from the server.");
+        throw new Error("No se pudo cargar la configuración.");
       }
-      
+
       const data = await response.json();
       if (data.sheetId) {
         sheetIdInput.value = data.sheetId;
-        msgDiv.textContent = "Current configuration loaded.";
+        msgDiv.textContent = "✅ Configuración cargada.";
       } else {
-        msgDiv.textContent = "Enter a Spreadsheet ID to get started.";
+        msgDiv.textContent = "Ingresa la indentificación de tu hoja de cálculo para comenzar.";
       }
       if (data.scoresSheetName && scoresSheetInput) {
         scoresSheetInput.value = data.scoresSheetName;
@@ -182,12 +185,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
       if (data.success) {
-        msgDiv.textContent = "✅ Configuration saved successfully!";
+        msgDiv.textContent = "✅ La configuración fue guardada correctamente!";
       } else {
-        throw new Error(data.message || "An unknown error occurred.");
+        throw new Error(data.message || "Ha ocurrido un error.");
       }
     } catch (error) {
-      msgDiv.textContent = `❌ Failed to save: ${error.message}`;
+      msgDiv.textContent = `❌ Falló al guardar: ${error.message}`;
       console.error(error);
     }
   }
