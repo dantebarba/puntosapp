@@ -246,7 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handler para colapsar/expandir tablas
   document.addEventListener("click", (e) => {
-    if (e.target && e.target.id === "toggleRewardsTable") {
+    const rewardsBtn = e.target.closest && e.target.closest("button#toggleRewardsTable");
+    if (rewardsBtn) {
       const content = document.getElementById("rewardsTableContent");
       const arrow = document.getElementById("arrowRewards");
       if (content) {
@@ -260,7 +261,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     }
-    if (e.target && e.target.id === "togglePointsTable") {
+    const pointsBtn = e.target.closest && e.target.closest("button#togglePointsTable");
+    if (pointsBtn) {
       const content = document.getElementById("pointsTableContent");
       const arrow = document.getElementById("arrowPoints");
       if (content) {
