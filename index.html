@@ -17,13 +17,13 @@
         alt="Company Logo" class="logo" />
       <h1 id="userName">¡Bienvenido!</h1>
     </div>
-    <div id="points" class="loading">Cargando...</div>
+    <div id="points" class="loading" role="status" aria-live="polite" aria-busy="true">Cargando...</div>
     <div id="congratsLabel" style="display:none;"></div>
-    <div id="rewardsTableContainer" style="margin-top:32px;">
-      <div class="loading">Cargando recompensas disponibles...</div>
+    <div id="rewardsTableContainer" style="margin-top:32px;" aria-busy="true">
+      <div class="loading" role="status" aria-live="polite">Cargando recompensas disponibles...</div>
     </div>
-    <div id="pointsTableContainer" style="margin-top:32px;">
-      <div class="loading">Cargando historial de puntos...</div>
+    <div id="pointsTableContainer" style="margin-top:32px;" aria-busy="true">
+      <div class="loading" role="status" aria-live="polite">Cargando historial de puntos...</div>
     </div>
     <form id="userForm" style="display:none; margin-top:28px;">
       <label for="userInput"
