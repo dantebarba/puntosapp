@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,36 +8,42 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
   <main class="card">
     <div class="card-header">
-      <img src="https://res.cloudinary.com/dctrptn13/image/upload/v1757811104/logo-rolu-nuevo_mccmn3.png" alt="Company Logo" class="logo" />
-  <h1 id="userName">¡Bienvenido!</h1>
+      <img src="https://res.cloudinary.com/dctrptn13/image/upload/v1757811104/logo-rolu-nuevo_mccmn3.png"
+        alt="Company Logo" class="logo" />
+      <h1 id="userName">¡Bienvenido!</h1>
     </div>
-  <div id="points" class="loading">Cargando...</div>
-  <div id="congratsLabel" style="display:none;"></div>
-  <div id="rewardsTableContainer" style="margin-top:32px;">
-    <div class="loading">Cargando recompensas disponibles...</div>
-  </div>
-  <div id="pointsTableContainer" style="margin-top:32px;">
-    <div class="loading">Cargando historial de puntos...</div>
-  </div>
-  <form id="userForm" style="display:none; margin-top:28px;">
-    <label for="userInput" style="font-size:17px; font-weight:600; display:block; margin-bottom:8px; letter-spacing:0.2px;">Ingresá tu código de usuario</label>
-    <div class="user-input-wrapper">
-      <span class="user-icon" aria-hidden="true">👤</span>
-      <input type="text" id="userInput" name="userInput" required placeholder="Ej: 1234-ABCD" autocomplete="off" maxlength="32" />
+    <div id="points" class="loading">Cargando...</div>
+    <div id="congratsLabel" style="display:none;"></div>
+    <div id="rewardsTableContainer" style="margin-top:32px;">
+      <div class="loading">Cargando recompensas disponibles...</div>
     </div>
-    <div id="userError"></div>
-    <button id="userSubmitBtn" type="submit">
-      <span id="btnText">Ver puntos</span>
-      <span id="btnSpinner"></span>
-    </button>
-  </form>
+    <div id="pointsTableContainer" style="margin-top:32px;">
+      <div class="loading">Cargando historial de puntos...</div>
+    </div>
+    <form id="userForm" style="display:none; margin-top:28px;">
+      <label for="userInput"
+        style="font-size:17px; font-weight:600; display:block; margin-bottom:8px; letter-spacing:0.2px;">Ingresá tu
+        código de usuario</label>
+      <div class="user-input-wrapper">
+        <span class="user-icon" aria-hidden="true">👤</span>
+        <input type="text" id="userInput" name="userInput" required placeholder="Ej: 1234-ABCD" autocomplete="off"
+          maxlength="32" />
+      </div>
+      <div id="userError"></div>
+      <button id="userSubmitBtn" type="submit">
+        <span id="btnText">Ver puntos</span>
+        <span id="btnSpinner"></span>
+      </button>
+    </form>
   </main>
 
   <script src="script.js" type="module"></script>
 
 </body>
+
 </html>
