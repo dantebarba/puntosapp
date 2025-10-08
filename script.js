@@ -2,19 +2,31 @@
 const pointsDiv = document.getElementById("points");
 const userNameH1 = document.getElementById("userName");
 
+function sanitizeNumber(input) {
+  return String(input)              // ensure it's a string
+    .replace(/\s+/g, '')            // remove all whitespace
+    .replace(/\D+/g, '')            // keep only digits
+    .replace(/^0+/, '');            // remove leading zeros
+}
+
+
 /**
  * Fetches and displays user points from an API.
  */
-
 async function loadPoints(userIdFromForm) {
-  const params = new URLSearchParams(window.location.search);
-  let userId = params.get("user");
+  let unsanitizedUserId = userIdFromForm;
+  if (!unsanitizedUserId) {
+    // If not provided from form, fallback to URL param
+    const params = new URLSearchParams(window.location.search);
+    unsanitizedUserId = params.get("user");
+  }
+  const userId = sanitizeNumber(unsanitizedUserId);
   const userForm = document.getElementById("userForm");
   const userError = document.getElementById("userError");
   const userSubmitBtn = document.getElementById("userSubmitBtn");
   const btnText = document.getElementById("btnText");
   const btnSpinner = document.getElementById("btnSpinner");
-  if (!userId && userIdFromForm) userId = userIdFromForm;
+  // (No longer needed, handled above)
 
   const congratsLabel = document.getElementById("congratsLabel");
   if (!userId) {
@@ -58,6 +70,12 @@ async function loadPoints(userIdFromForm) {
     pointsDiv.textContent = `Tenés ${data.puntos || 0} puntos`;
     if (userError) userError.textContent = "";
 
+    // Only update the URL if the search was successful
+    if (userIdFromForm) {
+      const url = new URL(window.location);
+      url.searchParams.set("user", userIdFromForm);
+      window.history.replaceState({}, '', url);
+    }
 
     // Calcular el premio canjeable en el frontend usando la tabla de rewards
     if (congratsLabel) {
