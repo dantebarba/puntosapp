@@ -7,13 +7,21 @@ const store = getStore({
   token: process.env.NETLIFY_API_TOKEN,
 });
 
-export async function handler(event) {
+export async function handler(event, context) {
   // Log every request to see what's happening
   console.log(`--- Admin function invoked at ${new Date().toISOString()} ---`);
   console.log("HTTP Method:", event.httpMethod);
 
   // Handle POST request (unchanged)
   if (event.httpMethod === "POST") {
+    const user = context?.clientContext?.user;
+    if (!user) {
+      return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
+    }
+    const roles = user.app_metadata?.roles || [];
+    if (!roles.includes("admin")) {
+      return { statusCode: 403, body: JSON.stringify({ error: "Forbidden" }) };
+    }
     try {
       const body = JSON.parse(event.body || "{}");
       const { sheetId, scoresSheetName, rewardsSheetName, pointsSheetName } = body;

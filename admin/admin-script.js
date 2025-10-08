@@ -173,9 +173,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     msgDiv.textContent = "Saving...";
     try {
+      // Helper: build Authorization header if login is enabled and a user is logged in
+      async function getAuthHeaders() {
+        if (!loginEnabled || !window.netlifyIdentity) return {};
+        const user = window.netlifyIdentity.currentUser?.();
+        if (!user) return {};
+        const token = await user.jwt();
+        return { Authorization: `Bearer ${token}` };
+      }
+
+      const authHeaders = await getAuthHeaders();
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...authHeaders
+        },
         body: JSON.stringify({ sheetId, scoresSheetName, rewardsSheetName, pointsSheetName })
       });
 
