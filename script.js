@@ -173,8 +173,9 @@ async function loadPoints(userIdFromForm) {
           table += '</tr>';
         });
         table += '</tbody></table>';
-        if (content) content.innerHTML = table += '<div class="data-table-notes">(*) por única vez</div>';
-        if (content) content.innerHTML = table += '<div class="data-table-notes">(**) aplica solo para la primer compra de tu amigo</div>';
+        table += '<div class="data-table-notes">(*) por única vez</div>';
+        table += '<div class="data-table-notes">(**) aplica solo para la primer compra de tu amigo</div>';
+        if (content) content.innerHTML = table;
       } catch (err) {
         const content = document.getElementById("pointsTableContent");
         if (content) content.innerHTML = `<div class='loading'>Error al cargar tabla de puntos</div>`;
