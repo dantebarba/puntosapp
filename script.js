@@ -9,6 +9,17 @@ function sanitizeNumber(input) {
     .replace(/^0+/, '');            // remove leading zeros
 }
 
+// HTML-escape helper for untrusted text
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]));
+}
+
 
 /**
  * Fetches and displays user points from an API.
@@ -97,7 +108,7 @@ async function loadPoints(userIdFromForm) {
               const premio = canjeables[canjeables.length - 1].descripción;
               congratsLabel.innerHTML = `
                 <div class="message-container">
-                  <div class="message-title">¡Felicitaciones! tenés <span class="message-highlight">${premio}</span> gratis!</div>
+                  <div class="message-title">¡Felicitaciones! tenés <span class="message-highlight">${escapeHtml(premio)}</span> gratis!</div>
                   <div style="font-size:16px;margin-top:6px;">
                     Canjea tus premios haciendo <a href="https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1" target="_blank" rel="noopener noreferrer" class="message-link">click aquí</a>
                   </div>
@@ -111,7 +122,7 @@ async function loadPoints(userIdFromForm) {
                 const falta = next.puntos - puntos;
                 congratsLabel.innerHTML = `
                   <div class="message-container">
-                    <div class="message-title">¡Te faltan <span class="message-highlight">${falta}</span> puntos para llegar a <span class="message-highlight">${next.descripción}</span> gratis!</div>
+                    <div class="message-title">¡Te faltan <span class="message-highlight">${escapeHtml(falta)}</span> puntos para llegar a <span class="message-highlight">${escapeHtml(next.descripción)}</span> gratis!</div>
                     <div style="font-size:16px;margin-top:6px;">
                       Hace tu próximo pedido haciendo <a href="https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1" target="_blank" rel="noopener noreferrer" class="message-link">click aquí</a>
                     </div>
@@ -157,7 +168,7 @@ async function loadPoints(userIdFromForm) {
           table += '<tr>';
           allowedHeaders.forEach(h => {
             const align = h === "descripción" ? "text-left" : "text-center";
-            table += `<td class="${align}">${row[h] || ''}</td>`;
+            table += `<td class="${align}">${escapeHtml(row[h] || '')}</td>`;
           });
           table += '</tr>';
         });
@@ -196,7 +207,7 @@ async function loadPoints(userIdFromForm) {
           table += '<tr>';
           allowedHeaders.forEach(h => {
             const align = h.toLowerCase() === "descripción" ? "text-left" : "text-center";
-            table += `<td class="${align}">${row[h] || ''}</td>`;
+            table += `<td class="${align}">${escapeHtml(row[h] || '')}</td>`;
           });
           table += '</tr>';
         });
