@@ -109,11 +109,12 @@ h1, h2, h3, h4, h5, h6, label, button, .logo, .icon, #userName, #points, .loadin
   background: #f7e7d3;
   border-radius: 8px;
   border: 1.5px solid #b85c38;
-  padding: 0 10px;
+  padding: 0 12px;
   width: 100%;
   max-width: 280px;
   margin-bottom: 2px;
   transition: border-color 0.2s;
+  min-height: 52px;
 }
 .user-input-wrapper:focus-within {
   border-color: #dd6740;
@@ -130,10 +131,11 @@ h1, h2, h3, h4, h5, h6, label, button, .logo, .icon, #userName, #points, .loadin
   background: transparent;
   font-size: 17px;
   font-family: 'Montserrat', Arial, sans-serif;
-  padding: 10px 0;
+  padding: 14px 0;
   width: 100%;
   color: #333;
   letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 #userInput::placeholder {
   color: #b9a48a;
