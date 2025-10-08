@@ -84,7 +84,7 @@ async function loadPoints(userIdFromForm) {
     // Only update the URL if the search was successful
     if (userIdFromForm) {
       const url = new URL(window.location);
-      url.searchParams.set("user", userIdFromForm);
+      url.searchParams.set("user", userId);
       window.history.replaceState({}, '', url);
     }
 
