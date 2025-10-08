@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sheetIdInput.value = data.sheetId;
         msgDiv.textContent = "✅ Configuración cargada.";
       } else {
-        msgDiv.textContent = "Ingresa la indentificación de tu hoja de cálculo para comenzar.";
+        msgDiv.textContent = "Ingresa la identificación de tu hoja de cálculo para comenzar.";
       }
       if (data.scoresSheetName && scoresSheetInput) {
         scoresSheetInput.value = data.scoresSheetName;
