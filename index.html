@@ -28,11 +28,11 @@
     <form id="userForm" hidden style="margin-top:28px;">
       <label for="userInput"
         style="font-size:17px; font-weight:600; display:block; margin-bottom:8px; letter-spacing:0.2px;">Ingresá tu
-        código de usuario</label>
+        número de teléfono</label>
       <div class="user-input-wrapper">
-        <span class="user-icon" aria-hidden="true">👤</span>
-        <input type="text" id="userInput" name="userInput" required placeholder="Ej: 2215552020" autocomplete="off"
-          maxlength="32" inputmode="text" autocapitalize="characters" spellcheck="false" aria-describedby="userError" />
+        <span class="user-icon" aria-hidden="true">📱</span>
+        <input type="tel" id="userInput" name="userInput" required placeholder="Ej: 2215552020" autocomplete="off"
+          maxlength="32" inputmode="tel" autocapitalize="off" spellcheck="false" aria-describedby="userError" />
       </div>
       <div id="userError" role="alert"></div>
       <button id="userSubmitBtn" type="submit">

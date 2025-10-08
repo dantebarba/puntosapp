@@ -2,19 +2,42 @@
 const pointsDiv = document.getElementById("points");
 const userNameH1 = document.getElementById("userName");
 
+function sanitizeNumber(input) {
+  return String(input)              // ensure it's a string
+    .replace(/\s+/g, '')            // remove all whitespace
+    .replace(/\D+/g, '')            // keep only digits
+    .replace(/^0+/, '');            // remove leading zeros
+}
+
+// HTML-escape helper for untrusted text
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]));
+}
+
+
 /**
  * Fetches and displays user points from an API.
  */
-
 async function loadPoints(userIdFromForm) {
-  const params = new URLSearchParams(window.location.search);
-  let userId = params.get("user");
+  let unsanitizedUserId = userIdFromForm;
+  if (!unsanitizedUserId) {
+    // If not provided from form, fallback to URL param
+    const params = new URLSearchParams(window.location.search);
+    unsanitizedUserId = params.get("user");
+  }
+  const userId = sanitizeNumber(unsanitizedUserId);
   const userForm = document.getElementById("userForm");
   const userError = document.getElementById("userError");
   const userSubmitBtn = document.getElementById("userSubmitBtn");
   const btnText = document.getElementById("btnText");
   const btnSpinner = document.getElementById("btnSpinner");
-  if (!userId && userIdFromForm) userId = userIdFromForm;
+  // (No longer needed, handled above)
 
   const congratsLabel = document.getElementById("congratsLabel");
   if (!userId) {
@@ -58,6 +81,12 @@ async function loadPoints(userIdFromForm) {
     pointsDiv.textContent = `Tenés ${data.puntos || 0} puntos`;
     if (userError) userError.textContent = "";
 
+    // Only update the URL if the search was successful
+    if (userIdFromForm) {
+      const url = new URL(window.location);
+      url.searchParams.set("user", userId);
+      window.history.replaceState({}, '', url);
+    }
 
     // Calcular el premio canjeable en el frontend usando la tabla de rewards
     if (congratsLabel) {
@@ -79,7 +108,7 @@ async function loadPoints(userIdFromForm) {
               const premio = canjeables[canjeables.length - 1].descripción;
               congratsLabel.innerHTML = `
                 <div class="message-container">
-                  <div class="message-title">¡Felicitaciones! tenés <span class="message-highlight">${premio}</span> gratis!</div>
+                  <div class="message-title">¡Felicitaciones! tenés <span class="message-highlight">${escapeHtml(premio)}</span> gratis!</div>
                   <div style="font-size:16px;margin-top:6px;">
                     Canjea tus premios haciendo <a href="https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1" target="_blank" rel="noopener noreferrer" class="message-link">click aquí</a>
                   </div>
@@ -93,7 +122,7 @@ async function loadPoints(userIdFromForm) {
                 const falta = next.puntos - puntos;
                 congratsLabel.innerHTML = `
                   <div class="message-container">
-                    <div class="message-title">¡Te faltan <span class="message-highlight">${falta}</span> puntos para llegar a <span class="message-highlight">${next.descripción}</span> gratis!</div>
+                    <div class="message-title">¡Te faltan <span class="message-highlight">${escapeHtml(falta)}</span> puntos para llegar a <span class="message-highlight">${escapeHtml(next.descripción)}</span> gratis!</div>
                     <div style="font-size:16px;margin-top:6px;">
                       Hace tu próximo pedido haciendo <a href="https://linktr.ee/rolurolls?utm_source=linktree_profile_share&ltsid=b1188bdf-7249-44de-a87b-f3f74a5da3f1" target="_blank" rel="noopener noreferrer" class="message-link">click aquí</a>
                     </div>
@@ -139,12 +168,14 @@ async function loadPoints(userIdFromForm) {
           table += '<tr>';
           allowedHeaders.forEach(h => {
             const align = h === "descripción" ? "text-left" : "text-center";
-            table += `<td class="${align}">${row[h] || ''}</td>`;
+            table += `<td class="${align}">${escapeHtml(row[h] || '')}</td>`;
           });
           table += '</tr>';
         });
         table += '</tbody></table>';
-        if (content) content.innerHTML = table + '<div class="data-table-notes">(*) por única vez</div>';
+        table += '<div class="data-table-notes">(*) por única vez</div>';
+        table += '<div class="data-table-notes">(**) aplica solo para la primer compra de tu amigo</div>';
+        if (content) content.innerHTML = table;
       } catch (err) {
         const content = document.getElementById("pointsTableContent");
         if (content) content.innerHTML = `<div class='loading'>Error al cargar tabla de puntos</div>`;
@@ -177,7 +208,7 @@ async function loadPoints(userIdFromForm) {
           table += '<tr>';
           allowedHeaders.forEach(h => {
             const align = h.toLowerCase() === "descripción" ? "text-left" : "text-center";
-            table += `<td class="${align}">${row[h] || ''}</td>`;
+            table += `<td class="${align}">${escapeHtml(row[h] || '')}</td>`;
           });
           table += '</tr>';
         });

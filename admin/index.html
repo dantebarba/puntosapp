@@ -24,7 +24,7 @@
         <input type="text" id="rewardsSheet" name="rewardsSheet" placeholder="Recompensas" required />
         <label for="pointsSheet">Hoja de configuracion de puntos</label>
         <input type="text" id="pointsSheet" name="pointsSheet" placeholder="Puntos" required />
-        <button type="submit">Save Configuration</button>
+        <button type="submit">Guardar Configuración</button>
       </form>
       <div id="msg" class="msg"></div>
       <button id="logoutBtn" style="margin-top:18px;">Cerrar sesión</button>
@@ -34,6 +34,7 @@
   <div id="loginPrompt" style="text-align:center; margin-top:80px;">
     <h2>Acceso solo para administradores</h2>
     <button id="loginBtn">Iniciar sesión</button>
+    <div id="loginErrorMessage" hidden role="alert" aria-live="polite" style="display:block; margin-top:12px; font-size:14px; color:#c92626;"></div>
   </div>
 
   <!-- Netlify Identity Widget -->
