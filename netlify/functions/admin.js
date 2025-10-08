@@ -14,7 +14,19 @@ export async function handler(event, context) {
 
   // Handle POST request (unchanged)
   if (event.httpMethod === "POST") {
-    const user = context?.clientContext?.user;
+    // Extract user from Netlify context
+    let user = null;
+    try {
+      const rawNetlifyContext = context?.clientContext?.custom?.netlify;
+      if (rawNetlifyContext) {
+        const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+        const parsedContext = JSON.parse(netlifyContext);
+        user = parsedContext.user;
+      }
+    } catch (err) {
+      console.error("Error parsing Netlify context:", err);
+    }
+    
     if (!user) {
       return { statusCode: 401, body: JSON.stringify({ error: "Unauthorized" }) };
     }
